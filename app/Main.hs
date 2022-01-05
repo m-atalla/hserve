@@ -5,8 +5,6 @@ import Network
 
 import System.IO
 
-data Person = Person { name :: String,
-                       age :: Int}
 main = do
     content <- readFile "app/index.html"
     s <- listenOn (PortNumber 8080)
