@@ -1,4 +1,5 @@
 ## Step up
+    - You will need cabal and ghc installed on your system to run this project.
 ```bash
 $ cabal run
 ```
