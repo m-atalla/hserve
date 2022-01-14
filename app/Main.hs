@@ -16,6 +16,7 @@ createSocket port = do
     getSocketName sock
     setSocketOption sock ReuseAddr 1  
     bind sock (SockAddrInet port iNADDR_ANY)
+    print sock
     listen sock 2
     return sock
 
