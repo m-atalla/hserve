@@ -31,7 +31,7 @@ executable hserve
     build-depends:    
         base ^>=4.14.3.0,
         network ^>=3.1.2.7,
-        bytestring,
-        directory
+        bytestring ^>=0.11.2.0,
+        directory ^>=1.3.7.0
     hs-source-dirs:   app
     default-language: Haskell2010
