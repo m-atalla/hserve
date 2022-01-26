@@ -2,26 +2,42 @@ module Main (main) where
 
 import Control.Concurrent (forkFinally)
 import qualified Control.Exception as E
-import Control.Monad (unless, forever, void)
+import Control.Monad (forever, void)
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Char8 as C
 import Network.Socket
 import Network.Socket.ByteString(recv, sendAll)
 import HTTP
 import System.Directory (doesFileExist)
+import System.IO (withFile, IOMode (ReadMode), hFileSize)
 
 main :: IO ()
-main = runTCPServer (Just "127.0.0.1") "3000" talk
+main = runTCPServer (Just "127.0.0.1") "3000" hserve
   where
-    talk s = do
+    hserve s = do
         msg <- recv s 1024
         let rawReq = unpackRequest msg
-        let path = resolvePath . parseRequestHead . head $ rawReq
-        pathQuery <- doesFileExist path
-        if pathQuery then
-            C.readFile path >>= \c -> (sendAll s $ packResponse "HTTP/1.1 OK\r\n\r\n" c)
-        else 
-            C.readFile "resource/404.html" >>= \c -> (sendAll s $ packResponse "HTTP/1.1 OK\r\n\r\n" c)
+        let req = parseRequestHead . head $ rawReq
+        let path = resolvePath req
+        pathExist <- doesFileExist path
+        if pathExist then do
+            let code = evalMethod $ method req
+
+            let resPath = evalPath path code
+
+            -- Content length (impure operation)
+            len <- fileLength resPath
+
+            -- Response body (resource being requested)
+            resource <- C.readFile resPath
+
+            -- constructing Response
+            let res = Response (ver req) code (statusMsg code) (resOHeaders path len)            
+
+
+            sendAll s $ packResponse (show res) resource
+        else
+            C.readFile "resource/404.html" >>= \c -> sendAll s $ packResponse "HTTP/1.1 404 NOT FOUND\r\n\r\n" c
         close s
 
 -- Since ByteString is an instance of Semigroup it
@@ -32,6 +48,7 @@ packResponse res content = C.pack res <> content
 
 unpackRequest :: C.ByteString -> [String]
 unpackRequest msg = lines $ C.unpack msg
+
 
 -- Runs "server" handlers in parallel
 runTCPServer :: Maybe HostName -> ServiceName -> (Socket -> IO a) -> IO a
