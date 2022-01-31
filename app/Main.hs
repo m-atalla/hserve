@@ -10,9 +10,22 @@ import Network.Socket.ByteString(recv, sendAll)
 import HTTP
 import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
+import Data.Word (Word16)
+
+
+host :: HostName
+host = "127.0.0.1"
+
+port :: ServiceName
+port = "3000"
+
+serviceURL :: HostName -> ServiceName -> String
+serviceURL h p = "http://" ++ host ++ ":" ++ port
 
 main :: IO ()
-main = runTCPServer (Just "127.0.0.1") "3000" hserve
+main =
+    putStrLn ("Starting server on on:" ++ serviceURL host port) >>
+    runTCPServer (Just host) port hserve
   where
     hserve s = do
         msg <- recv s 1024
@@ -32,7 +45,7 @@ main = runTCPServer (Just "127.0.0.1") "3000" hserve
             resource <- C.readFile resPath
 
             -- constructing Response
-            let res = Response (ver req) code (statusMsg code) (resOHeaders path len)            
+            let res = Response (ver req) code (statusMsg code) (resOHeaders path len)
 
 
             sendAll s $ packResponse (show res) resource
