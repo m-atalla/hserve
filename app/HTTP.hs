@@ -10,12 +10,9 @@ type Extension = String
 type StatusCode = Int
 
 
--- Unsupported methods: POST, PUT, PATCH, DELETE
+-- Unsupported methods: POST, PUT, PATCH, DELETE, etc..
 data Method = GET | NOT_IMPLEMENTED
-    deriving Eq
-
-instance Show Method where
-    show m = if m == GET then "GET" else "NOT_IMPLEMENTED"
+    deriving (Eq, Show)
 
 data Request = Request {
     method :: Method,
