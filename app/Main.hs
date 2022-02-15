@@ -20,7 +20,7 @@ port :: ServiceName
 port = "3000"
 
 serviceURL :: HostName -> ServiceName -> String
-serviceURL h p = "http://" ++ host ++ ":" ++ port
+serviceURL h p = "http://" ++ h ++ ":" ++ p
 
 main :: IO ()
 main =
@@ -87,4 +87,4 @@ runTCPServer mhost port server = withSocketsDo $ do
             -- but 'E.bracketOnError' above will be necessary if some
             -- non-atomic setups (e.g. spawning a subprocess to handle
             -- @conn@) before proper cleanup of @conn@ is your case
-            forkFinally (server conn) (const $ gracefulClose conn 5000)
+            forkFinally (server conn) (const $ gracefulClose conn 5000) 
