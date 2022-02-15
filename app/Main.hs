@@ -87,4 +87,4 @@ runTCPServer mhost port server = withSocketsDo $ do
             -- but 'E.bracketOnError' above will be necessary if some
             -- non-atomic setups (e.g. spawning a subprocess to handle
             -- @conn@) before proper cleanup of @conn@ is your case
-            forkFinally (server conn) (const $ gracefulClose conn 5000) 
+            forkFinally (server conn) (const $ close conn) 
