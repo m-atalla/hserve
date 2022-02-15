@@ -97,7 +97,7 @@ resOHeaders p len =
 -- E
 fileLength :: FilePath -> IO (Maybe Integer)
 fileLength path = do
-    size <- try (withFile path ReadMode hFileSize) :: IO (Either SomeException Integer)
+    size <- try $ withFile path ReadMode hFileSize :: IO (Either SomeException Integer)
     case size of
         Left _ -> return Nothing
         Right n -> return $ Just n
