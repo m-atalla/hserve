@@ -54,9 +54,11 @@ main = do
             sendNotFoundResponse s
 
         -- atomically allows performing STM actions inside IO actions
-        atomically $ commitTransaction result
-        update <- atomically $ readTVar result
-        putStr $ "\r" ++ show update
+        atomically $ commitUpdate result
+        responseCounter <- atomically $ readTVar result
+
+        putStr $ "\r" ++ show responseCounter
+
         close s
 
 
@@ -75,8 +77,8 @@ unpackRequest msg = lines $ C.unpack msg
 
 
 -- Gets a TVar int
-commitTransaction :: ThreadResult -> STM ()
-commitTransaction result = do
+commitUpdate :: ThreadResult -> STM ()
+commitUpdate result = do
     instances <- readTVar result
     writeTVar result (succ instances)
 
