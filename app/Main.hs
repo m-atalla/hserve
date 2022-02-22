@@ -12,7 +12,6 @@ import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import GHC.Conc
 
-
 type ThreadResult = TVar Int
 
 host :: HostName
@@ -31,10 +30,16 @@ main = do
     runTCPServer (Just host) port hserve responseTVar
   where
     hserve s result = do
+        -- receiving request as bytestring
         msg <- recv s 1024
-        let rawReq = unpackRequest msg
-        let req = parseRequestHead . head $ rawReq
+        let reqList = unpackRequest msg
+
+        -- parse first line of the request
+        -- (e.g. "GET / HTTP/1.1")
+        let req = parseRequestHead . head $ reqList
+
         let path = resolvePath req
+
         pathExist <- doesFileExist path
         if pathExist then do
             let code = evalMethod $ method req
