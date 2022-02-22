@@ -1,7 +1,7 @@
 {-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module HTTP where
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
-import Control.Exception ( try,  SomeException, evaluate )
+import Control.Exception ( try,  SomeException )
 
 
 -- Type aliases
