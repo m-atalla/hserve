@@ -60,7 +60,7 @@ main = do
 
         -- atomically allows performing STM actions inside IO actions
         atomically $ commitUpdate result
-        responseCounter <- atomically $ readTVar result
+        responseCounter <- readTVarIO result
 
         putStr $ "\r" ++ show responseCounter
 
