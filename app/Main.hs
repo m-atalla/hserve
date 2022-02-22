@@ -1,8 +1,8 @@
 module Main (main) where
 
-import Control.Concurrent (forkFinally, threadDelay)
+import Control.Concurrent (forkFinally)
 import qualified Control.Exception as E
-import Control.Monad (forever, void, forM_)
+import Control.Monad (forever, void)
 import qualified Data.ByteString as S
 import qualified Data.ByteString.Char8 as C
 import Network.Socket
