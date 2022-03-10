@@ -1,30 +1,11 @@
-## Setup
-You will need cabal and ghc installed on your system to run this project. I don't use windows as a daily driver but I found on the easiest way to get ghc and cabal running is through chocolatey a package manager for windows.
-
-- Follow the installation guide found [here](https://chocolatey.org/install#individual)
-
-```powershell
-    # in admin powershell
-    Set-ExecutionPolicy Bypass -Scope Process
-```
-choco installation
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-```
-
-- Install ghc and cabal
-```powershell
-    choco install ghc
-```
-
 To run the program:
-```powershell
+```bash
     cabal run
 ```
 The server will start at **http://localhost:3000**
 
 To run the program in interactive mode (ghci with all the modules and libraries loaded):
-```powershell
+```bash
     cabal repl
 ```
 
