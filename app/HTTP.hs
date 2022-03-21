@@ -86,15 +86,17 @@ joinH = foldr (\x acc-> x ++ " " ++ acc) "\r\n"
 
 
 -- Response optional headers
-resOHeaders :: Path -> Maybe Integer -> [HeaderField]
-resOHeaders p len =
+resOHeaders :: Path -> Maybe Integer -> String -> [HeaderField]
+resOHeaders p len dateTime=
     [
-        HeaderField "Server" "Hserve/0.1",
+        HeaderField "Server" "Hserve/0.2",
         HeaderField "Content-Type" (contentType p),
-        HeaderField "Content-Length" (maybe "0" show len)
+        HeaderField "Content-Length" (maybe "0" show len),
+        HeaderField "Date" dateTime
     ]
 
--- E
+-- Get File length
+-- TODO: should this be in new `FS` module?
 fileLength :: FilePath -> IO (Maybe Integer)
 fileLength path = do
     size <- try $ withFile path ReadMode hFileSize :: IO (Either SomeException Integer)

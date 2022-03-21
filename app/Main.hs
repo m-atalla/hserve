@@ -11,6 +11,7 @@ import HTTP
 import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import GHC.Conc
+import qualified Time 
 
 type ThreadResult = TVar Int
 
@@ -40,7 +41,11 @@ main = do
 
         let path = resolvePath req
 
+        serverDateTime <- Time.getServerTime 
+
         pathExist <- doesFileExist path
+
+        -- TODO: Error 404 error handling shouldn't be as explicit as it is right now?
         if pathExist then do
             let code = evalMethod $ method req
 
@@ -53,9 +58,12 @@ main = do
             resource <- C.readFile resPath
 
             -- constructing Response
-            let res = Response (ver req) code (statusMsg code) (resOHeaders path len)
+            let optionalHeaders = resOHeaders path len serverDateTime 
+            let res = Response (ver req) code (statusMsg code) optionalHeaders
+
             sendAll s $ packResponse (show res) resource
         else
+            -- TODO: add optional headers to 404
             sendNotFoundResponse s
 
         -- atomically allows performing STM actions inside IO actions
