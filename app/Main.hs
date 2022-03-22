@@ -30,9 +30,9 @@ main = do
     responseTVar <- newTVarIO 0
     runTCPServer (Just host) port hserve responseTVar
   where
-    hserve s result = do
+    hserve skt result = do
         -- receiving request as bytestring
-        msg <- recv s 1024
+        msg <- recv skt 1024
         let reqList = unpackRequest msg
 
         -- parse first line of the request
@@ -61,10 +61,10 @@ main = do
             let optionalHeaders = resOHeaders path len serverDateTime 
             let res = Response (ver req) code (statusMsg code) optionalHeaders
 
-            sendAll s $ packResponse (show res) resource
+            sendAll skt $ packResponse (show res) resource
         else
             -- TODO: add optional headers to 404
-            sendNotFoundResponse s
+            sendNotFoundResponse skt
 
         -- atomically allows performing STM actions inside IO actions
         atomically $ commitUpdate result
@@ -72,7 +72,7 @@ main = do
 
         putStr $ "\r" ++ show responseCounter
 
-        close s
+        close skt
 
 
 sendNotFoundResponse :: Socket -> IO ()
