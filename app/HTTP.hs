@@ -117,6 +117,7 @@ contentTypeGen ext = case ext of
                                 "css" -> "text/css"
                                 "js" -> "text/javascript"
                                 "gif" -> "image/gif"
+                                "json" -> "application/json"
 
 -- Splits a string using a character
 -- The resulting string DOES NOT include the split character
