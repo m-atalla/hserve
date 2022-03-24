@@ -70,12 +70,6 @@ main = do
 
         close skt
 
-sendNotFoundResponse :: Socket -> IO ()
-sendNotFoundResponse skt = do
-    let resPath = "resource/404.html"
-    c <- C.readFile resPath
-    sendAll skt $ packResponse "HTTP/1.1 404 NOT FOUND\r\n\r\n" c
-
 -- Since ByteString is an instance of Semigroup it
 -- is able to concat with another ByteString using (<>) function
 packResponse :: String -> C.ByteString -> C.ByteString
