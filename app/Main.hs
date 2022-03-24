@@ -45,26 +45,22 @@ main = do
 
         pathExist <- doesFileExist path
 
-        -- TODO: Error 404 error handling shouldn't be as explicit as it is right now?
-        if pathExist then do
-            let code = evalMethod $ method req
+        let code = if pathExist then evalMethod $ method req else 404
 
-            let resPath = evalPath path code
+        let resPath = if pathExist then evalPath path code else "resource/404.html"
 
-            -- Content length (impure operation)
-            len <- fileLength resPath
+        -- Content length (impure operation)
+        len <- fileLength resPath
 
-            -- Response body (resource being requested)
-            resource <- C.readFile resPath
+        -- Response body (resource being requested)
+        resource <- C.readFile resPath
 
-            -- constructing Response
-            let optionalHeaders = resOHeaders path len serverDateTime 
-            let res = Response (ver req) code (statusMsg code) optionalHeaders
+        -- constructing Response
+        let responseHeaders = resOHeaders path len serverDateTime 
 
-            sendAll skt $ packResponse (show res) resource
-        else
-            -- TODO: add optional headers to 404
-            sendNotFoundResponse skt
+        let res = Response (ver req) code (statusMsg code) responseHeaders
+
+        sendAll skt $ packResponse (show res) resource
 
         -- atomically allows performing STM actions inside IO actions
         atomically $ commitUpdate result
@@ -73,7 +69,6 @@ main = do
         putStr $ "\r" ++ show responseCounter
 
         close skt
-
 
 sendNotFoundResponse :: Socket -> IO ()
 sendNotFoundResponse skt = do
