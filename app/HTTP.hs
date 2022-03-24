@@ -87,11 +87,11 @@ joinH = foldr (\x acc-> x ++ " " ++ acc) "\r\n"
 
 -- Response optional headers
 resOHeaders :: Path -> Maybe Integer -> String -> [HeaderField]
-resOHeaders p len dateTime=
+resOHeaders path len dateTime=
     [
         HeaderField "Server" "Hserve/0.2",
-        HeaderField "Content-Type" (contentType p),
-        HeaderField "Content-Length" (maybe "0" show len),
+        HeaderField "Content-Type" $ contentType path,
+        HeaderField "Content-Length" $ maybe "0" show len,
         HeaderField "Date" dateTime
     ]
 
@@ -110,14 +110,17 @@ contentType p = contentTypeGen $ splitOn p '.'
 contentTypeGen :: Extension -> String
 contentTypeGen ext = case ext of
                                 "html" -> "text/html"
-                                "png" -> "image/png"
-                                "ico" -> "image/vnd.microsoft.icon"
-                                "jpg" -> "image/jpeg"
+                                "png"  -> "image/png"
+                                "ico"  -> "image/vnd.microsoft.icon"
+                                "jpg"  -> "image/jpeg"
                                 "jpeg" -> "image/jpeg"
-                                "css" -> "text/css"
-                                "js" -> "text/javascript"
-                                "gif" -> "image/gif"
+                                "css"  -> "text/css"
+                                "js"   -> "text/javascript"
+                                "gif"  -> "image/gif"
                                 "json" -> "application/json"
+                                -- Default case is a text/html 
+                                -- which is the content type of error pages.
+                                _      -> "text/html"
 
 -- Splits a string using a character
 -- The resulting string DOES NOT include the split character
