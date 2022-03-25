@@ -12,23 +12,18 @@ import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import GHC.Conc
 import qualified Time 
+import qualified Config (host, port)
 
 type ThreadResult = TVar Int
-
-host :: HostName
-host = "127.0.0.1"
-
-port :: ServiceName
-port = "3000"
 
 serviceURL :: HostName -> ServiceName -> String
 serviceURL h p = "http://" ++ h ++ ":" ++ p
 
 main :: IO ()
 main = do
-    putStrLn ("Starting server on on:" ++ serviceURL host port)
+    putStrLn ("Starting server on on:" ++ serviceURL Config.host Config.port)
     responseTVar <- newTVarIO 0
-    runTCPServer (Just host) port hserve responseTVar
+    runTCPServer (Just Config.host) Config.port hserve responseTVar
   where
     hserve skt result = do
         -- receiving request as bytestring
