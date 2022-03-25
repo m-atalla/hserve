@@ -11,7 +11,7 @@ import HTTP
 import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import GHC.Conc
-import qualified Time 
+import qualified Time (getServerTime) 
 import qualified Config (host, port)
 
 type ThreadResult = TVar Int

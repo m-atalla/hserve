@@ -1,4 +1,4 @@
-module Time where
+module Time (getServerTime) where
 
 import Data.Time.Clock ( getCurrentTime )
 import Data.Time.Format ( defaultTimeLocale, formatTime )
