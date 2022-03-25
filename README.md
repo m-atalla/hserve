@@ -1,4 +1,4 @@
-To run the program:
+To run the server:
 ```bash
     cabal run
 ```
@@ -10,10 +10,9 @@ To run the program in interactive mode (ghci with all the modules and libraries 
 ```
 
 ## Possible errors
-If port 3000 is already being used on your machine, please change the server port in Main.hs
+If port 3000 is already being used on your machine, please change the server port in Config.hs
 ```haskell
-    -- replace the second argument with a valid port number
-    main = runTCPServer (Just "127.0.0.1") "<NEW_PORT>" hserve
+    port = "<NEW_PORT>"
 ```
 
 ## Required library: defined in hserve.cabal
