@@ -60,7 +60,12 @@ parseRequestHead raw = eat $ words raw
         -- parse request words using the `Request` type constructor
         eat request = case request of 
             (m:p:v:_)   -> Request (resolveMethod m) p v
-            _           -> error "Invalid HTTP Request"
+            _           -> headParsingError request 
+
+headParsingError :: [String] -> a
+headParsingError request = error $ "Invalid HTTP init line.\n\
+                                    \Expected pattern: '<Method> <Path> <Version>'.\n\
+                                    \Received: " ++ concat request
 
 resolvePath :: Request -> String
 resolvePath req = case reqPath of [] -> error "Invalid Path"
