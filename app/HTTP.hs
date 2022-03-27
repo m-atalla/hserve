@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module HTTP where
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import Control.Exception ( try,  SomeException )
@@ -58,8 +57,9 @@ resolveMethod sm
 parseRequestHead :: String -> Request
 parseRequestHead raw = eat $ words raw
     where
-        eat []        = error "Invalid HTTP Request"
-        eat (m:p:v:_) = Request (resolveMethod m) p v
+        eat request = case request of 
+            (m:p:v:_)   -> Request (resolveMethod m) p v
+            _           -> error "Invalid HTTP Request"
 
 resolvePath :: Request -> String
 resolvePath req = case reqPath of [] -> error "Invalid Path"
