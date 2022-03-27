@@ -57,6 +57,7 @@ resolveMethod sm
 parseRequestHead :: String -> Request
 parseRequestHead raw = eat $ words raw
     where
+        -- parse request words using the `Request` type constructor
         eat request = case request of 
             (m:p:v:_)   -> Request (resolveMethod m) p v
             _           -> error "Invalid HTTP Request"
