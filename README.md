@@ -1,3 +1,8 @@
+To compile targets in defined in `hserve.cabal` file:
+```bash
+    cabal build
+```
+
 To run the server:
 ```bash
     cabal run
