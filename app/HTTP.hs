@@ -1,6 +1,7 @@
 module HTTP where
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import Control.Exception ( try,  SomeException )
+import Config ( root )
 
 
 -- Type aliases
@@ -69,8 +70,8 @@ headParsingError request = error $ "Invalid HTTP init line.\n\
 
 resolvePath :: Request -> String
 resolvePath req = case reqPath of [] -> error "Invalid Path"
-                                  "/" -> "resource/index.html"
-                                  reqPath -> "resource/" +/+ reqPath
+                                  "/" -> root +/+ "index.html"
+                                  reqPath -> root +/+ reqPath
     where reqPath = path req
 
 statusMsg :: StatusCode -> String
