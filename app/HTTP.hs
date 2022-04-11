@@ -1,7 +1,7 @@
 module HTTP where
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import Control.Exception ( try,  SomeException )
-import Config ( root )
+import qualified Config ( root )
 
 
 -- Type aliases
@@ -70,8 +70,8 @@ headParsingError request = error $ "Invalid HTTP init line.\n\
 
 resolvePath :: Request -> String
 resolvePath req = case reqPath of [] -> error "Invalid Path"
-                                  "/" -> root +/+ "index.html"
-                                  reqPath -> root +/+ reqPath
+                                  "/" -> Config.root +/+ "index.html"
+                                  reqPath -> Config.root +/+ reqPath
     where reqPath = path req
 
 statusMsg :: StatusCode -> String
@@ -85,7 +85,7 @@ evalMethod :: Method -> StatusCode
 evalMethod m = if m == GET then 200 else 405
 
 evalPath :: Path -> StatusCode -> Path
-evalPath p code = if code == 200 then p else "resource/405.html"
+evalPath p code = if code == 200 then p else Config.root +/+ "/405.html"
 
 -- concats a string with a space and ends line with CRLF
 joinH :: [String] -> String
