@@ -34,7 +34,8 @@ import HTTP
       resolvePath,
       statusMsg,
       Request(method, ver),
-      Response(Response) )
+      Response(Response),
+      (+/+))
 import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import GHC.Conc
@@ -46,7 +47,7 @@ import GHC.Conc
       writeTVar,
       TVar )
 import qualified Time (getServerTime) 
-import qualified Config (host, port)
+import qualified Config (host, port, root)
 
 type ThreadResult = TVar Int
 
@@ -76,7 +77,7 @@ main = do
 
         let code = if pathExist then evalMethod $ method req else 404
 
-        let resPath = if pathExist then evalPath path code else "resource/404.html"
+        let resPath = if pathExist then evalPath path code else Config.root +/+ "/404.html"
 
         -- Content length (impure operation)
         len <- fileLength resPath
