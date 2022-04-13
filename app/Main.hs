@@ -57,10 +57,9 @@ serviceURL h p = "http://" ++ h ++ ":" ++ p
 main :: IO ()
 main = do
     putStrLn ("Starting server on on:" ++ serviceURL Config.host Config.port)
-    responseTVar <- newTVarIO 0
-    runTCPServer (Just Config.host) Config.port hserve responseTVar
+    runTCPServer (Just Config.host) Config.port hserve
   where
-    hserve skt result = do
+    hserve skt = do
         -- receiving request as bytestring
         msg <- recv skt 1024
         let reqList = unpackRequest msg
@@ -92,12 +91,6 @@ main = do
 
         sendAll skt $ packResponse (show res) resource
 
-        -- atomically allows performing STM actions inside IO actions
-        atomically $ commitUpdate result
-        responseCounter <- readTVarIO result
-
-        putStr $ "\r" ++ show responseCounter
-
         close skt
 
 -- Since ByteString is an instance of Semigroup it
@@ -117,8 +110,8 @@ commitUpdate result = do
     writeTVar result (succ instances)
 
 -- Runs "server" handlers in parallel
-runTCPServer :: Maybe HostName -> ServiceName -> (Socket -> ThreadResult -> IO a) -> ThreadResult -> IO a
-runTCPServer mhost port server threadResult = withSocketsDo $ do
+runTCPServer :: Maybe HostName -> ServiceName -> (Socket -> IO a) -> IO a
+runTCPServer mhost port server = withSocketsDo $ do
     addr <- resolve
     E.bracket (open addr) close loop
   where
@@ -140,4 +133,4 @@ runTCPServer mhost port server threadResult = withSocketsDo $ do
             -- but 'E.bracketOnError' above will be necessary if some
             -- non-atomic setups (e.g. spawning a subprocess to handle
             -- @conn@) before proper cleanup of @conn@ is your case
-            forkFinally (server conn threadResult) (const $ close conn)
+            forkFinally (server conn) (const $ close conn)
