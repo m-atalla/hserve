@@ -38,18 +38,8 @@ import HTTP
       (+/+))
 import System.Directory (doesFileExist)
 import System.IO (withFile, IOMode (ReadMode), hFileSize)
-import GHC.Conc
-    ( STM,
-      atomically,
-      newTVarIO,
-      readTVar,
-      readTVarIO,
-      writeTVar,
-      TVar )
 import qualified Time (getServerTime) 
 import qualified Config (host, port, root)
-
-type ThreadResult = TVar Int
 
 serviceURL :: HostName -> ServiceName -> String
 serviceURL h p = "http://" ++ h ++ ":" ++ p
@@ -102,12 +92,6 @@ packResponse res content = C.pack res <> content
 unpackRequest :: C.ByteString -> [String]
 unpackRequest msg = lines $ C.unpack msg
 
-
--- Gets a TVar int
-commitUpdate :: ThreadResult -> STM ()
-commitUpdate result = do
-    instances <- readTVar result
-    writeTVar result (succ instances)
 
 -- Runs "server" handlers in parallel
 runTCPServer :: Maybe HostName -> ServiceName -> (Socket -> IO a) -> IO a
