@@ -24,7 +24,9 @@ fileLength filePath = do
 
 
 resolvePath :: Request -> String
-resolvePath req = case reqPath of [] -> error "Invalid Path"
-                                  "/" -> Config.root +/+ "index.html"
-                                  reqPath -> Config.root +/+ reqPath
-    where reqPath = path req
+resolvePath req = case reqPath of
+    []  -> error "Invalid Path"
+    "/" -> Config.root +/+ "index.html"
+    _   -> Config.root +/+ reqPath
+  where
+    reqPath = path req
