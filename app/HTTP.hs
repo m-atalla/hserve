@@ -38,10 +38,10 @@ evalPath p code = if code == 200 then p else Config.root +/+ "/405.html"
 
 -- Response optional headers
 resOHeaders :: Path -> Maybe Integer -> String -> [HeaderField]
-resOHeaders path len dateTime=
+resOHeaders filePath len dateTime=
     [
         HeaderField "Server" "Hserve/0.2",
-        HeaderField "Content-Type" $ contentType path,
+        HeaderField "Content-Type" $ contentType filePath,
         HeaderField "Content-Length" $ maybe "0" show len,
         HeaderField "Date" dateTime
     ]
