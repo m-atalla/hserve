@@ -2,6 +2,12 @@ module HTTP where
 import qualified Config ( root )
 import FileSystem ( (+/+) )
 import HTTPTypes
+    ( HeaderField(HeaderField),
+      Method(..),
+      Request(Request),
+      StatusCode,
+      Extension,
+      Path )
 
 resolveMethod :: String -> Method
 resolveMethod sm
