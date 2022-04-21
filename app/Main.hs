@@ -3,7 +3,6 @@ module Main (main) where
 import Control.Concurrent (forkFinally)
 import qualified Control.Exception as E
 import Control.Monad (forever, void)
-import qualified Data.ByteString as S
 import qualified Data.ByteString.Char8 as C
 import Network.Socket
     ( setCloseOnExecIfNeeded,
@@ -28,16 +27,13 @@ import Network.Socket.ByteString(recv, sendAll)
 import HTTP
     ( evalMethod,
       evalPath,
-      fileLength,
       parseRequestHead,
       resOHeaders,
-      resolvePath,
-      statusMsg,
-      Request(method, ver),
-      Response(Response),
-      (+/+))
+      statusMsg )
+
+import HTTPTypes ( Response(Response), Request(method, ver) )
+import FileSystem ( (+/+), fileLength, resolvePath )
 import System.Directory (doesFileExist)
-import System.IO (withFile, IOMode (ReadMode), hFileSize)
 import qualified Time (getServerTime) 
 import qualified Config (host, port, root)
 
