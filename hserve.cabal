@@ -1,35 +1,22 @@
 cabal-version:      2.4
 name:               hserve
 version:            0.2.0.0
-
--- A short (one-line) description of the package.
--- synopsis:
-
--- A longer description of the package.
--- description:
-
--- A URL where users can report bugs.
--- bug-reports:
-
--- The license under which the package is released.
--- license:
 author:             Mohammed Atallah
 maintainer:         m.ibrahim.atallah@gmail.com
-
--- A copyright notice.
--- copyright:
--- category:
 extra-source-files: CHANGELOG.md
-
 executable hserve
     main-is:          Main.hs
     -- Modules included in this executable, other than Main.
     other-modules:    
         HTTP
+        HTTPTypes
         Time
         Config
+        FileSystem
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
+    ghc-options:
+        -Wall
     build-depends:    
         base ^>=4.14.3.0,
         time,
